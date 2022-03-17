@@ -1,7 +1,9 @@
 const path = require('path');
+const { DefinePlugin } = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HttpWebpackPlugin = require('html-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const isWsl = require('is-wsl');
 
 module.exports = {
@@ -37,6 +39,11 @@ module.exports = {
             template: path.resolve(__dirname, 'public/index.html'),
             filename: 'index.html'
         }),
+        new BundleAnalyzerPlugin(),
+        new DefinePlugin({
+            // 值不能直接写字符串，否则会被转换为变量
+            SOME_THING: JSON.stringify('webpack demo')
+        })
     ],
     optimization: {
         minimize: true,
@@ -44,8 +51,6 @@ module.exports = {
             new TerserWebpackPlugin({
                 // 不将注释单独提到（license）文件中
                 extractComments: false,
-                // 使用缓存
-                cache: true,
                 // 多线程打包
                 parallel: !isWsl,
                 terserOptions: {

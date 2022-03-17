@@ -12,7 +12,7 @@ class App extends Component<Props, State> {
   state = {};
 
   render() {
-    return <div id="app"></div>;
+    return <div id="app">{SOME_THING}</div>;
   }
 }
 
