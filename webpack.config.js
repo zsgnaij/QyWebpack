@@ -1,14 +1,18 @@
 const path = require('path');
+const os = require('os');
+const isWsl = require('is-wsl');
 const { DefinePlugin } = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HttpWebpackPlugin = require('html-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const isWsl = require('is-wsl');
+const HappyPack = require('happypack');
 
 module.exports = {
     mode: 'production',
     entry: path.resolve(__dirname, 'src/index.js'),
+    // !! 不设置此配置会导致bundle webpack部分代码仍会出现es6语法
+    target: ['web', 'es5'],
     output: {
         filename: 'bundle.[hash].js',
         path: path.resolve(__dirname, 'dist')
@@ -24,7 +28,7 @@ module.exports = {
                 ],
             },
             {
-                test: /\.jsx?$/,
+                test: /\.m?jsx?$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
@@ -39,7 +43,7 @@ module.exports = {
             template: path.resolve(__dirname, 'public/index.html'),
             filename: 'index.html'
         }),
-        new BundleAnalyzerPlugin(),
+        // new BundleAnalyzerPlugin(),
         new DefinePlugin({
             // 值不能直接写字符串，否则会被转换为变量
             SOME_THING: JSON.stringify('webpack demo')
